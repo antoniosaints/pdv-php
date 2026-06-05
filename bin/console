@@ -1,0 +1,143 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+use Pdv\Auth\AuthService;
+use Pdv\Catalog\CatalogRepository;
+use Pdv\Catalog\ValidationException;
+use Pdv\Database\ConnectionFactory;
+use Pdv\Database\Migrator;
+use Pdv\Support\Env;
+
+$rootPath = dirname(__DIR__);
+$autoloadPath = $rootPath . '/vendor/autoload.php';
+
+if (! is_file($autoloadPath)) {
+    fwrite(STDERR, "Dependências não instaladas. Execute composer install.\n");
+    exit(1);
+}
+
+require $autoloadPath;
+
+Env::load($rootPath);
+
+$command = $argv[1] ?? 'help';
+$options = array_slice($argv, 2);
+
+try {
+    $pdo = (new ConnectionFactory($rootPath))->make();
+    $migrator = new Migrator($pdo, $rootPath . '/database/migrations');
+    $auth = new AuthService($pdo, false);
+    $catalog = new CatalogRepository($pdo);
+
+    match ($command) {
+        'migrate' => runMigrate($migrator, $auth, $options),
+        'migrate:status' => runStatus($migrator),
+        'seed:catalog' => seedCatalog($rootPath, $catalog),
+        'help', '--help', '-h' => runHelp(),
+        default => unknownCommand($command),
+    };
+} catch (Throwable $throwable) {
+    fwrite(STDERR, "Erro: {$throwable->getMessage()}\n");
+    exit(1);
+}
+
+/** @param list<string> $options */
+function runMigrate(Migrator $migrator, AuthService $auth, array $options): void
+{
+    $ran = $migrator->migrate();
+
+    if ($ran === []) {
+        echo "Banco já está atualizado.\n";
+    } else {
+        foreach ($ran as $migration) {
+            echo "Migration executada: {$migration}\n";
+        }
+    }
+
+    if (in_array('--seed-admin', $options, true)) {
+        seedAdminFromEnvironment($auth);
+    }
+}
+
+function seedAdminFromEnvironment(AuthService $auth): void
+{
+    if ($auth->hasUsers()) {
+        echo "Seed do administrador ignorado: já existe usuário cadastrado.\n";
+        return;
+    }
+
+    $email = Env::get('ADMIN_EMAIL');
+    $password = Env::get('ADMIN_PASSWORD');
+    $name = Env::get('ADMIN_NAME', 'Administrador') ?? 'Administrador';
+
+    if ($email === null || $password === null) {
+        echo "Seed do administrador ignorado: configure ADMIN_EMAIL e ADMIN_PASSWORD ou acesse /setup/admin.\n";
+        return;
+    }
+
+    $auth->createUser($name, $email, $password, 'admin');
+    echo "Administrador inicial criado com e-mail configurado no ambiente.\n";
+}
+
+function seedCatalog(string $rootPath, CatalogRepository $catalog): void
+{
+    if ($catalog->listProducts('DEMO-CAMISETA') !== [] || $catalog->listProducts('DEMO-AJUSTE-BARRA') !== []) {
+        echo "Seed de catálogo ignorado: dados demo já existem.\n";
+        return;
+    }
+
+    $seedFile = $rootPath . '/database/seeders/catalog_seed.php';
+
+    if (! is_file($seedFile)) {
+        throw new RuntimeException('Arquivo de seed do catálogo não encontrado.');
+    }
+
+    $seed = require $seedFile;
+
+    if (! is_callable($seed)) {
+        throw new RuntimeException('Seed do catálogo deve retornar uma função.');
+    }
+
+    try {
+        $created = $seed($catalog);
+    } catch (ValidationException $exception) {
+        throw new RuntimeException('Seed do catálogo falhou: ' . implode(' ', $exception->errors()), 0, $exception);
+    }
+
+    foreach ($created as $line) {
+        echo "Seed criado: {$line}\n";
+    }
+}
+
+function runStatus(Migrator $migrator): void
+{
+    $status = $migrator->status();
+
+    echo "Executadas: " . count($status['executed']) . "\n";
+    foreach ($status['executed'] as $migration) {
+        echo "  [x] {$migration}\n";
+    }
+
+    echo "Pendentes: " . count($status['pending']) . "\n";
+    foreach ($status['pending'] as $migration) {
+        echo "  [ ] {$migration}\n";
+    }
+}
+
+function runHelp(): void
+{
+    echo "PDV Estoque console\n\n";
+    echo "Comandos:\n";
+    echo "  migrate [--seed-admin]  Executa migrations pendentes e cria admin se ADMIN_EMAIL/ADMIN_PASSWORD existirem\n";
+    echo "  migrate:status          Mostra migrations executadas e pendentes\n";
+    echo "  seed:catalog            Cria produto e serviço demo para PDV e testes manuais\n";
+}
+
+function unknownCommand(string $command): never
+{
+    fwrite(STDERR, "Comando desconhecido: {$command}\n");
+    runHelp();
+    exit(1);
+}

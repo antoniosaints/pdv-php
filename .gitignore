@@ -1,0 +1,11 @@
+vendor/
+.env
+storage/database/*.sqlite
+storage/database/*.sqlite-shm
+storage/database/*.sqlite-wal
+storage/logs/*.log
+.phpunit.cache/
+.DS_Store
+
+!storage/database/.gitkeep
+!storage/logs/.gitkeep

@@ -1,0 +1,36 @@
+{
+    "name": "loja/pdv-estoque",
+    "description": "Sistema web PHP para PDV, estoque, produtos, servicos, etiquetas e relatorios.",
+    "type": "project",
+    "license": "proprietary",
+    "require": {
+        "php": ">=8.1",
+        "ext-pdo": "*",
+        "nikic/fast-route": "^1.3",
+        "vlucas/phpdotenv": "^5.6"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^10.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "Pdv\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "serve": "php -S 127.0.0.1:8080 -t public",
+        "setup": "php bin/console migrate --seed-admin",
+        "test": "phpunit"
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {}
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}
