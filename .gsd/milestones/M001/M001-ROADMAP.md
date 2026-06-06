@@ -19,13 +19,13 @@
 - [x] **S02: S02** `risk:high` `depends:[]`
   > After this: An authenticated admin can create products, variants, services, barcodes, costs, prices, stock minimums and label data, then search them responsively.
 
-- [ ] **S03: PDV vendas e baixa automatica** `risk:high` `depends:[S02]`
+- [x] **S03: S03** `risk:high` `depends:[]`
   > After this: A cashier can scan or type a barcode, add items to cart, apply quantity/discount, choose payment, finalize a sale and see stock decrease automatically.
 
-- [ ] **S04: Impressao recibos e etiquetas** `risk:high` `depends:[S03]`
+- [x] **S04: S04** `risk:high` `depends:[]`
   > After this: After a sale, the cashier can preview and send a receipt to QZ Tray; an admin can print a product label from catalog data, with visible connection status.
 
-- [ ] **S05: Reposicao e controle de estoque** `risk:medium` `depends:[S03]`
+- [x] **S05: S05** `risk:medium` `depends:[]`
   > After this: The stock screen shows low-stock products, lets the user record replenishment entries or adjustments, and updates balances and movement history.
 
 - [ ] **S06: Servicos e ordens de servico** `risk:medium` `depends:[S02,S03]`

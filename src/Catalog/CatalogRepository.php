@@ -256,6 +256,22 @@ SQL);
         return is_array($row) ? $this->castLookup($row) : null;
     }
 
+    /** @return array<string, mixed>|null */
+    public function findForSaleVariant(int $variantId): ?array
+    {
+        $statement = $this->pdo->prepare(<<<'SQL'
+SELECT v.*, p.name AS product_name, p.type AS product_type, p.track_stock, p.price_cents AS product_price_cents, p.cost_cents AS product_cost_cents
+FROM product_variants v
+INNER JOIN products p ON p.id = v.product_id
+WHERE v.id = :id AND v.active = 1 AND p.active = 1
+LIMIT 1
+SQL);
+        $statement->execute(['id' => $variantId]);
+        $row = $statement->fetch();
+
+        return is_array($row) ? $this->castLookup($row) : null;
+    }
+
     /** @return list<array<string, mixed>> */
     public function searchForSale(string $term, int $limit = 15): array
     {

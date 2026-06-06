@@ -76,6 +76,14 @@ final class Request
         return trim((string) $value);
     }
 
+    /** @return array<mixed> */
+    public function postArray(string $key): array
+    {
+        $value = $this->post[$key] ?? [];
+
+        return is_array($value) ? $value : [];
+    }
+
     public function clientIp(): ?string
     {
         $ip = $this->server['REMOTE_ADDR'] ?? null;

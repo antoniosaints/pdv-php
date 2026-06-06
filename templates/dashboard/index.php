@@ -10,7 +10,9 @@
         <form method="post" action="/logout">
             <input type="hidden" name="_token" value="<?= htmlspecialchars((string) $csrfToken, ENT_QUOTES, 'UTF-8') ?>">
             <div class="actions actions--vertical">
-                <a class="button" href="/catalog">Abrir catálogo</a>
+                <a class="button" href="/pos">Abrir PDV</a>
+                <a class="button button--ghost" href="/catalog">Abrir catálogo</a>
+                <a class="button button--ghost" href="/stock">Controlar estoque</a>
                 <button class="button button--ghost" type="submit">Sair</button>
             </div>
         </form>

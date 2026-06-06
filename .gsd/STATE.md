@@ -1,9 +1,9 @@
 # GSD State
 
 **Active Milestone:** M001: MVP operacional de PDV e estoque
-**Active Slice:** S03: PDV vendas e baixa automatica
+**Active Slice:** S06: Servicos e ordens de servico
 **Phase:** planning
-**Requirements Status:** 7 active · 4 validated · 0 deferred · 1 out of scope
+**Requirements Status:** 3 active · 8 validated · 0 deferred · 1 out of scope
 
 ## Milestone Registry
 - 🔄 **M001:** MVP operacional de PDV e estoque
@@ -17,4 +17,4 @@
 - None
 
 ## Next Action
-Slice S03 has no DB tasks. Plan slice tasks before execution.
+Slice S06 has no DB tasks. Plan slice tasks before execution.

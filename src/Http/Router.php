@@ -13,7 +13,12 @@ use Pdv\Controllers\CatalogController;
 use Pdv\Controllers\DashboardController;
 use Pdv\Controllers\HealthController;
 use Pdv\Controllers\HomeController;
+use Pdv\Controllers\PrintController;
+use Pdv\Controllers\SalesController;
+use Pdv\Controllers\StockController;
 use Pdv\Http\Middleware\AuthMiddleware;
+use Pdv\Sales\SalesRepository;
+use Pdv\Stock\StockRepository;
 use Pdv\Security\Csrf;
 use Pdv\Support\HealthCheck;
 use Pdv\View\View;
@@ -27,6 +32,8 @@ final class Router
         private readonly Csrf $csrf,
         private readonly ?HealthCheck $health = null,
         private readonly ?CatalogRepository $catalog = null,
+        private readonly ?SalesRepository $sales = null,
+        private readonly ?StockRepository $stock = null,
     ) {
     }
 
@@ -50,8 +57,11 @@ final class Router
         $dashboard = new DashboardController($this->view, $this->auth, $this->csrf);
         $health = $this->health === null ? null : new HealthController($this->view, $this->health, $this->auth, $this->csrf);
         $catalog = $this->catalog === null ? null : new CatalogController($this->view, $this->catalog, $this->auth, $this->csrf);
+        $sales = $this->sales === null || $this->catalog === null ? null : new SalesController($this->view, $this->sales, $this->catalog, $this->auth, $this->csrf);
+        $print = $this->sales === null || $this->catalog === null ? null : new PrintController($this->view, $this->sales, $this->catalog, $this->auth, $this->csrf);
+        $stock = $this->stock === null ? null : new StockController($this->view, $this->stock, $this->auth, $this->csrf);
 
-        return simpleDispatcher(static function (RouteCollector $route) use ($home, $authController, $dashboard, $health, $catalog): void {
+        return simpleDispatcher(static function (RouteCollector $route) use ($home, $authController, $dashboard, $health, $catalog, $sales, $print, $stock): void {
             $route->addRoute('GET', '/', ['callable' => [$home, 'index']]);
             $route->addRoute('GET', '/login', ['callable' => [$authController, 'showLogin']]);
             $route->addRoute('POST', '/login', ['callable' => [$authController, 'login']]);
@@ -76,6 +86,24 @@ final class Router
                 $route->addRoute('POST', '/catalog/{id:\\d+}/variants/{variantId:\\d+}', ['callable' => [$catalog, 'updateVariant'], 'auth' => true, 'roles' => ['admin', 'estoque']]);
                 $route->addRoute('GET', '/catalog/lookup/barcode', ['callable' => [$catalog, 'lookupBarcode'], 'auth' => true, 'roles' => ['admin', 'estoque', 'caixa']]);
                 $route->addRoute('GET', '/catalog/search', ['callable' => [$catalog, 'search'], 'auth' => true, 'roles' => ['admin', 'estoque', 'caixa']]);
+            }
+
+            if ($stock !== null) {
+                $route->addRoute('GET', '/stock', ['callable' => [$stock, 'index'], 'auth' => true, 'roles' => ['admin', 'estoque']]);
+                $route->addRoute('POST', '/stock/replenishments', ['callable' => [$stock, 'replenish'], 'auth' => true, 'roles' => ['admin', 'estoque']]);
+                $route->addRoute('POST', '/stock/adjustments', ['callable' => [$stock, 'adjust'], 'auth' => true, 'roles' => ['admin', 'estoque']]);
+            }
+
+            if ($sales !== null) {
+                $route->addRoute('GET', '/pos', ['callable' => [$sales, 'pos'], 'auth' => true, 'roles' => ['admin', 'caixa']]);
+                $route->addRoute('POST', '/pos/sales', ['callable' => [$sales, 'finalize'], 'auth' => true, 'roles' => ['admin', 'caixa']]);
+                $route->addRoute('GET', '/pos/lookup/barcode', ['callable' => [$sales, 'lookupBarcode'], 'auth' => true, 'roles' => ['admin', 'caixa']]);
+                $route->addRoute('GET', '/sales/{id:\\d+}', ['callable' => [$sales, 'show'], 'auth' => true, 'roles' => ['admin', 'caixa']]);
+            }
+
+            if ($print !== null) {
+                $route->addRoute('GET', '/sales/{id:\\d+}/receipt', ['callable' => [$print, 'receipt'], 'auth' => true, 'roles' => ['admin', 'caixa']]);
+                $route->addRoute('GET', '/catalog/{id:\\d+}/variants/{variantId:\\d+}/label', ['callable' => [$print, 'label'], 'auth' => true, 'roles' => ['admin', 'estoque']]);
             }
         });
     }

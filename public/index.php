@@ -9,7 +9,9 @@ use Pdv\Database\Migrator;
 use Pdv\Http\Request;
 use Pdv\Http\Response;
 use Pdv\Http\Router;
+use Pdv\Sales\SalesRepository;
 use Pdv\Security\Csrf;
+use Pdv\Stock\StockRepository;
 use Pdv\Support\Env;
 use Pdv\Support\HealthCheck;
 use Pdv\View\View;
@@ -34,7 +36,8 @@ try {
     $pdo = (new ConnectionFactory($rootPath))->make();
     $migrator = new Migrator($pdo, $rootPath . '/database/migrations');
     $auth = new AuthService($pdo);
-    $router = new Router($view, $auth, new Csrf(), new HealthCheck($rootPath, $pdo, $migrator), new CatalogRepository($pdo));
+    $catalog = new CatalogRepository($pdo);
+    $router = new Router($view, $auth, new Csrf(), new HealthCheck($rootPath, $pdo, $migrator), $catalog, new SalesRepository($pdo), new StockRepository($pdo));
 
     $response = $router->dispatch(Request::fromGlobals());
 } catch (Throwable $throwable) {

@@ -28,6 +28,13 @@ composer serve
 
 Acesse `http://127.0.0.1:8080`. No primeiro acesso, abra `/setup/admin` para criar o administrador inicial. Essa tela só funciona enquanto não houver usuários cadastrados. Depois de logar como admin, use `/health` para ver o diagnóstico operacional protegido.
 
+Para testar o PDV após `php bin/console seed:catalog`, abra `/pos` e use os códigos demo:
+
+- `7891000000010` — Camiseta Demo / Preta M, produto com estoque inicial para validar baixa automática.
+- `7891000000027` — Ajuste de Barra Demo, serviço sem baixa física de estoque.
+
+Ao finalizar uma venda, a tela `/sales/{id}` mostra itens, pagamento, troco e movimentos de estoque vinculados para diagnóstico.
+
 Se preferir criar o administrador pelo console, defina `ADMIN_EMAIL`, `ADMIN_PASSWORD` e opcionalmente `ADMIN_NAME` no ambiente antes de rodar `composer setup`; os valores não são exibidos no console.
 
 ## Scripts
@@ -47,6 +54,23 @@ O diretório público da hospedagem deve apontar para `public/`. Arquivos como `
 
 O padrão do MVP é SQLite em `storage/database/pdv.sqlite`. Para manter migração futura para MySQL viável, o domínio deve usar PDO, migrations versionadas e SQL conservador.
 
+## Estoque
+
+A tela protegida `/stock` centraliza o controle operacional de estoque para usuários `admin` ou `estoque`:
+
+- mostra variantes controladas, saldo atual e estoque mínimo;
+- destaca itens no estoque mínimo ou abaixo dele;
+- registra entrada de compra/reposição com quantidade positiva;
+- registra ajustes manuais positivos ou negativos com motivo obrigatório;
+- exibe histórico recente de movimentos.
+
+Vendas, reposições e ajustes usam o mesmo ledger `stock_movements`, sempre com quantidade antes/depois, tipo do movimento e motivo/referência. Ajustes que deixariam saldo negativo são bloqueados.
+
 ## Impressão
 
-A impressão de recibos e etiquetas será feita no navegador via QZ Tray. O MVP não emite NFC-e, SAT, SPED ou qualquer documento fiscal legal.
+A impressão de recibos e etiquetas é feita pelo navegador com duas camadas:
+
+- Preview protegido no sistema: `/sales/{id}/receipt` para recibo gerencial e `/catalog/{id}/variants/{variantId}/label` para etiqueta.
+- Adaptador browser-side em `/assets/print.js`, que tenta usar QZ Tray quando `window.qz` está disponível e mostra status/erro na própria página.
+
+Se QZ Tray não estiver instalado ou disponível, os previews exibem fallback de impressão nativa do navegador. O MVP não emite NFC-e, SAT, SPED ou qualquer documento fiscal legal; o recibo é gerencial não fiscal.

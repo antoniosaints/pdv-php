@@ -62,7 +62,7 @@
         <?php else: ?>
             <div class="table-wrap table-wrap--spaced">
                 <table>
-                    <thead><tr><th>Variante</th><th>SKU</th><th>Barcode</th><th>Preço</th><th>Estoque</th><th>Status</th><th>Editar rápido</th></tr></thead>
+                    <thead><tr><th>Variante</th><th>SKU</th><th>Barcode</th><th>Preço</th><th>Estoque</th><th>Status</th><th>Etiqueta / editar rápido</th></tr></thead>
                     <tbody>
                         <?php foreach ($variants as $variant): ?>
                             <tr>
@@ -73,6 +73,7 @@
                                 <td><?= (int) $variant['current_stock'] ?></td>
                                 <td><span class="pill <?= ((int) $variant['active']) === 1 ? 'pill--ok' : 'pill--muted' ?>"><?= ((int) $variant['active']) === 1 ? 'Ativa' : 'Inativa' ?></span></td>
                                 <td>
+                                    <a class="button button--ghost" href="/catalog/<?= (int) $product['id'] ?>/variants/<?= (int) $variant['id'] ?>/label">Imprimir etiqueta</a>
                                     <?php
                                         $isEditingThisVariant = $editingVariantId === (int) $variant['id'];
                                         $formVariant = $isEditingThisVariant ? $variantInput + $variant : $variant;

@@ -1,0 +1,3 @@
+{"id":"81ca1671-96e5-4400-ab49-dabbd56d7b48","ts":"2026-06-05T21:47:02.148Z","severity":"info","message":"Current version: v2.78.1\nChecking npm registry...","source":"notify","read":false}
+{"id":"93d79f75-6856-4753-a371-8459099f891f","ts":"2026-06-05T21:47:02.638Z","severity":"info","message":"Updating: v2.78.1 → v3.0.0...","source":"notify","read":false}
+{"id":"e0c64e6f-b437-44ab-8e8f-9515a6019f4f","ts":"2026-06-05T21:51:54.584Z","severity":"info","message":"Updated to v3.0.0. Restart your GSD session to use the new version.","source":"notify","read":false}

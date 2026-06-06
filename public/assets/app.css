@@ -631,6 +631,240 @@ td small {
     margin-top: 1rem;
 }
 
+.pos-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    gap: 1rem;
+    align-items: start;
+    margin-top: 1rem;
+}
+
+.pos-cart-item {
+    display: grid;
+    gap: 1rem;
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.38);
+}
+
+.pos-cart-item strong,
+.pos-cart-item small {
+    display: block;
+}
+
+.pos-cart-item small {
+    margin-top: 0.25rem;
+    color: var(--muted);
+}
+
+.pos-results .button {
+    min-height: 2.25rem;
+    padding: 0.45rem 0.75rem;
+    box-shadow: none;
+}
+
+.print-shell {
+    display: grid;
+    gap: 1rem;
+}
+
+.print-status {
+    padding: 1rem;
+    border-left: 8px solid var(--accent);
+}
+
+.print-status strong {
+    display: block;
+    margin-bottom: 0.35rem;
+    font-size: 1.15rem;
+}
+
+.print-preview {
+    display: grid;
+    place-items: center;
+    border: 1px dashed rgba(23, 20, 15, 0.22);
+    border-radius: var(--radius);
+    padding: clamp(1rem, 4vw, 2rem);
+    background: rgba(255, 255, 255, 0.34);
+}
+
+.receipt-paper,
+.label-card {
+    border: 1px solid rgba(23, 20, 15, 0.24);
+    background: #fffef8;
+    color: #17140f;
+    box-shadow: 0 18px 50px rgba(35, 28, 18, 0.12);
+}
+
+.receipt-paper {
+    width: min(380px, 100%);
+    padding: 1.1rem;
+    font-family: 'Courier New', monospace;
+}
+
+.receipt-header,
+.receipt-footer {
+    display: grid;
+    gap: 0.25rem;
+    text-align: center;
+}
+
+.receipt-header strong {
+    font-size: 1.2rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.receipt-header span,
+.receipt-header small,
+.receipt-footer span {
+    color: #4b4338;
+}
+
+.receipt-table {
+    min-width: 0;
+    margin: 1rem 0;
+    font-size: 0.88rem;
+}
+
+.receipt-table th,
+.receipt-table td {
+    padding: 0.45rem 0;
+}
+
+.receipt-table small {
+    display: block;
+}
+
+.receipt-totals {
+    display: grid;
+    gap: 0.35rem;
+    margin: 1rem 0;
+}
+
+.receipt-totals div {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.receipt-totals dt,
+.receipt-totals dd {
+    margin: 0;
+}
+
+.label-card {
+    display: grid;
+    width: min(320px, 100%);
+    gap: 0.35rem;
+    padding: 1.1rem;
+    text-align: center;
+}
+
+.label-card small,
+.label-card em {
+    color: #4b4338;
+    font-size: 0.75rem;
+    font-style: normal;
+    font-weight: 900;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+}
+
+.label-card strong {
+    font-size: 1.35rem;
+    line-height: 1;
+    letter-spacing: -0.045em;
+}
+
+.label-card b {
+    font-size: 2rem;
+    letter-spacing: -0.06em;
+}
+
+.label-barcode {
+    margin: 0.45rem 0;
+    border-block: 8px solid #17140f;
+    padding: 0.55rem 0;
+    font-family: 'Courier New', monospace;
+    font-weight: 900;
+    letter-spacing: 0.12em;
+}
+
+.stock-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.stock-alerts {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.8rem;
+}
+
+.stock-alert {
+    border: 1px solid rgba(180, 35, 24, 0.24);
+    border-radius: 18px;
+    padding: 1rem;
+    background: rgba(180, 35, 24, 0.07);
+}
+
+.stock-alert strong,
+.stock-alert span {
+    display: block;
+}
+
+.stock-alert span {
+    margin-top: 0.25rem;
+    color: var(--muted);
+}
+
+.stock-delta--positive {
+    color: var(--brand-dark);
+    font-weight: 900;
+}
+
+.stock-delta--negative {
+    color: var(--danger);
+    font-weight: 900;
+}
+
+@media print {
+    body {
+        background: #fff;
+    }
+
+    .topbar,
+    .no-print {
+        display: none !important;
+    }
+
+    .shell,
+    .print-shell,
+    .print-preview {
+        width: auto;
+        margin: 0;
+        padding: 0;
+        border: 0;
+        background: transparent;
+        box-shadow: none;
+    }
+
+    .receipt-paper,
+    .label-card {
+        box-shadow: none;
+    }
+}
+
+@media (max-width: 980px) {
+    .pos-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
 @media (max-width: 820px) {
     .topbar {
         position: static;
@@ -641,7 +875,9 @@ td small {
     .panel--hero,
     .grid--three,
     .health-grid,
-    .form-grid {
+    .form-grid,
+    .stock-actions,
+    .stock-alerts {
         grid-template-columns: 1fr;
     }
 

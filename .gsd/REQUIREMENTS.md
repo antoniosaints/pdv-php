@@ -4,46 +4,6 @@ This file is the explicit capability and coverage contract for the project.
 
 ## Active
 
-### R004 — O sistema deve registrar movimentações de estoque e baixar estoque automaticamente quando vendas de produtos forem concluídas.
-- Class: core-capability
-- Status: active
-- Description: O sistema deve registrar movimentações de estoque e baixar estoque automaticamente quando vendas de produtos forem concluídas.
-- Why it matters: Controle automático evita divergência manual e torna relatórios e reposição confiáveis.
-- Source: user
-- Primary owning slice: M001/S03
-- Validation: Partially advanced by S02; automatic movement/decrement not yet validated.
-- Notes: Catalog carries current stock and stock minimums; full stock movement ledger and automatic decrement remain mapped to S03/S05.
-
-### R005 — O PDV deve permitir venda avulsa responsiva com busca por produto, leitor de código de barras, itens, quantidades, descontos, formas de pagamento e finalização.
-- Class: primary-user-loop
-- Status: active
-- Description: O PDV deve permitir venda avulsa responsiva com busca por produto, leitor de código de barras, itens, quantidades, descontos, formas de pagamento e finalização.
-- Why it matters: Este é o fluxo operacional mais crítico para uma loja.
-- Source: user
-- Primary owning slice: M001/S03
-- Validation: mapped to M001/S03
-- Notes: Leitor de código de barras será tratado como entrada de teclado no navegador, padrão dos leitores USB/Bluetooth.
-
-### R006 — O sistema deve imprimir recibos do PDV e etiquetas de produtos diretamente pelo navegador usando QZ Tray.
-- Class: integration
-- Status: active
-- Description: O sistema deve imprimir recibos do PDV e etiquetas de produtos diretamente pelo navegador usando QZ Tray.
-- Why it matters: Impressão direta reduz fricção no caixa e habilita operação com impressoras térmicas e etiquetas.
-- Source: user
-- Primary owning slice: M001/S04
-- Validation: mapped to M001/S04
-- Notes: M001 prova integração de recibo; etiquetas podem começar como layout e impressão básica, com refinamento posterior.
-
-### R007 — O sistema deve controlar reposição de estoque com estoque mínimo, alertas e registro de entradas de compra ou ajuste.
-- Class: core-capability
-- Status: active
-- Description: O sistema deve controlar reposição de estoque com estoque mínimo, alertas e registro de entradas de compra ou ajuste.
-- Why it matters: Reposição reduz ruptura de estoque e ajuda o lojista a agir antes de perder vendas.
-- Source: user
-- Primary owning slice: M001/S05
-- Validation: mapped to M001/S05
-- Notes: M001 entrega alerta e entrada manual; sugestões avançadas podem usar histórico em marco posterior.
-
 ### R008 — O sistema deve registrar venda de serviços e ordens de serviço com status, cliente, itens/serviços, valores e conclusão.
 - Class: core-capability
 - Status: active
@@ -51,8 +11,8 @@ This file is the explicit capability and coverage contract for the project.
 - Why it matters: Algumas lojas vendem serviços além de produtos e precisam acompanhar execução antes da cobrança ou entrega.
 - Source: user
 - Primary owning slice: M001/S06
-- Validation: mapped to M001/S06
-- Notes: Serviços podem entrar no PDV no M001; ordens de serviço completas ficam para marco posterior se o MVP precisar ser reduzido.
+- Validation: Partially advanced by S02 service items.
+- Notes: Service catalog items exist and can be looked up; full order-of-service flow remains mapped to S06.
 
 ### R009 — O sistema deve oferecer relatórios de vendas, lucro, desempenho mensal, previsão do mês, dashboard de resumo e dicas de melhoria baseadas nos dados.
 - Class: core-capability
@@ -106,6 +66,46 @@ This file is the explicit capability and coverage contract for the project.
 - Validation: Validated by S02: products, services, variants, barcodes, costs, prices, stock minimum and label data tested and browser-verified.
 - Notes: Validated at catalog depth. Future slices consume this catalog for PDV, labels, stock and reports.
 
+### R004 — O sistema deve registrar movimentações de estoque e baixar estoque automaticamente quando vendas de produtos forem concluídas.
+- Class: core-capability
+- Status: validated
+- Description: O sistema deve registrar movimentações de estoque e baixar estoque automaticamente quando vendas de produtos forem concluídas.
+- Why it matters: Controle automático evita divergência manual e torna relatórios e reposição confiáveis.
+- Source: user
+- Primary owning slice: M001/S03
+- Validation: Validated by S03: transactional PDV sale finalization decrements product variant stock and writes stock_movements ledger rows; PHPUnit and browser UAT confirmed movement 12 → 11 after sale.
+- Notes: Stock movement ledger now supports sale movements. Replenishment/adjustment movement types remain for S05.
+
+### R005 — O PDV deve permitir venda avulsa responsiva com busca por produto, leitor de código de barras, itens, quantidades, descontos, formas de pagamento e finalização.
+- Class: primary-user-loop
+- Status: validated
+- Description: O PDV deve permitir venda avulsa responsiva com busca por produto, leitor de código de barras, itens, quantidades, descontos, formas de pagamento e finalização.
+- Why it matters: Este é o fluxo operacional mais crítico para uma loja.
+- Source: user
+- Primary owning slice: M001/S03
+- Validation: Validated by S03: protected /pos flow supports barcode/search item selection, quantity, discount, payment method and finalization; browser UAT completed a seeded barcode sale and landed on the sale detail page.
+- Notes: Backend accepts multiple item rows; current UI is server-rendered with GET-based item selection and can be progressively enhanced for scanner-driven multi-item cart behavior.
+
+### R006 — O sistema deve imprimir recibos do PDV e etiquetas de produtos diretamente pelo navegador usando QZ Tray.
+- Class: integration
+- Status: validated
+- Description: O sistema deve imprimir recibos do PDV e etiquetas de produtos diretamente pelo navegador usando QZ Tray.
+- Why it matters: Impressão direta reduz fricção no caixa e habilita operação com impressoras térmicas e etiquetas.
+- Source: user
+- Primary owning slice: M001/S04
+- Validation: Validated by S04: receipt and label preview routes, QZ Tray browser adapter, visible print diagnostics and native fallback were covered by feature tests and browser UAT with no console/network failures.
+- Notes: Real QZ Tray hardware/service printing still requires environment-specific validation; MVP now provides the integration path, diagnostics and native browser fallback. Fiscal issuance remains out of scope.
+
+### R007 — O sistema deve controlar reposição de estoque com estoque mínimo, alertas e registro de entradas de compra ou ajuste.
+- Class: core-capability
+- Status: validated
+- Description: O sistema deve controlar reposição de estoque com estoque mínimo, alertas e registro de entradas de compra ou ajuste.
+- Why it matters: Reposição reduz ruptura de estoque e ajuda o lojista a agir antes de perder vendas.
+- Source: user
+- Primary owning slice: M001/S05
+- Validation: Validated by S05: protected stock screen shows low-stock alerts, records replenishment and manual adjustments, prevents negative stock and displays movement history; repository tests, feature tests and browser UAT passed.
+- Notes: Validated at MVP depth: manual replenishment and adjustment are present. Supplier purchase orders, automatic reorder suggestions and advanced procurement can evolve in later milestones.
+
 ### R010 — O sistema deve manter portabilidade entre SQLite e MySQL usando PDO, migrations versionadas e SQL conservador.
 - Class: quality-attribute
 - Status: validated
@@ -137,11 +137,11 @@ This file is the explicit capability and coverage contract for the project.
 | R001 | launchability | validated | M001/S01 | none | Validated by S01: Composer setup, SQLite migration, CLI install verifier and browser UAT through real PHP entrypoint passed. |
 | R002 | compliance/security | validated | M001/S01 | none | Validated by S01: first-admin setup, login/logout, CSRF, protected dashboard and auth guard tests passed. |
 | R003 | core-capability | validated | M001/S02 | none | Validated by S02: products, services, variants, barcodes, costs, prices, stock minimum and label data tested and browser-verified. |
-| R004 | core-capability | active | M001/S03 | none | Partially advanced by S02; automatic movement/decrement not yet validated. |
-| R005 | primary-user-loop | active | M001/S03 | none | mapped to M001/S03 |
-| R006 | integration | active | M001/S04 | none | mapped to M001/S04 |
-| R007 | core-capability | active | M001/S05 | none | mapped to M001/S05 |
-| R008 | core-capability | active | M001/S06 | none | mapped to M001/S06 |
+| R004 | core-capability | validated | M001/S03 | none | Validated by S03: transactional PDV sale finalization decrements product variant stock and writes stock_movements ledger rows; PHPUnit and browser UAT confirmed movement 12 → 11 after sale. |
+| R005 | primary-user-loop | validated | M001/S03 | none | Validated by S03: protected /pos flow supports barcode/search item selection, quantity, discount, payment method and finalization; browser UAT completed a seeded barcode sale and landed on the sale detail page. |
+| R006 | integration | validated | M001/S04 | none | Validated by S04: receipt and label preview routes, QZ Tray browser adapter, visible print diagnostics and native fallback were covered by feature tests and browser UAT with no console/network failures. |
+| R007 | core-capability | validated | M001/S05 | none | Validated by S05: protected stock screen shows low-stock alerts, records replenishment and manual adjustments, prevents negative stock and displays movement history; repository tests, feature tests and browser UAT passed. |
+| R008 | core-capability | active | M001/S06 | none | Partially advanced by S02 service items. |
 | R009 | core-capability | active | M001/S07 | none | mapped to M001/S07 |
 | R010 | quality-attribute | validated | M001/S01 | none | Validated by S01: PDO connection and idempotent migrations on SQLite, with migration pattern containing SQLite/MySQL branches. |
 | R011 | continuity | active | M001/S08 | none | mapped to M001/S08 |
@@ -149,7 +149,7 @@ This file is the explicit capability and coverage contract for the project.
 
 ## Coverage Summary
 
-- Active requirements: 7
-- Mapped to slices: 7
-- Validated: 4 (R001, R002, R003, R010)
+- Active requirements: 3
+- Mapped to slices: 3
+- Validated: 8 (R001, R002, R003, R004, R005, R006, R007, R010)
 - Unmapped active requirements: 0
