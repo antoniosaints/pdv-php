@@ -4,9 +4,9 @@
     --paper: #f6f0e5;
     --panel: #fffaf0;
     --line: #261f171f;
-    --brand: #0c6b4f;
-    --brand-dark: #084532;
-    --accent: #29f09d;
+    --brand: #0a42bb;
+    --brand-dark: #081645;
+    --accent: #29e9f0;
     --danger: #b42318;
     --shadow: 0 24px 80px rgba(35, 28, 18, 0.14);
     --radius: 24px;
@@ -832,6 +832,53 @@ td small {
     font-weight: 900;
 }
 
+.service-order-items,
+.service-order-detail-grid {
+    display: grid;
+    gap: 1rem;
+}
+
+.service-order-item-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 7rem 9rem;
+    gap: 0.8rem;
+    align-items: end;
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.36);
+}
+
+.service-order-detail-grid {
+    grid-template-columns: minmax(0, 1fr) minmax(280px, 0.45fr);
+    align-items: start;
+    margin-top: 1rem;
+}
+
+.service-order-facts {
+    display: grid;
+    gap: 0.8rem;
+    margin: 1rem 0 0;
+}
+
+.service-order-facts div {
+    display: grid;
+    gap: 0.2rem;
+}
+
+.service-order-facts dt {
+    color: var(--brand-dark);
+    font-size: 0.78rem;
+    font-weight: 900;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.service-order-facts dd {
+    margin: 0;
+    color: var(--muted);
+}
+
 @media print {
     body {
         background: #fff;
@@ -877,7 +924,9 @@ td small {
     .health-grid,
     .form-grid,
     .stock-actions,
-    .stock-alerts {
+    .stock-alerts,
+    .service-order-item-row,
+    .service-order-detail-grid {
         grid-template-columns: 1fr;
     }
 

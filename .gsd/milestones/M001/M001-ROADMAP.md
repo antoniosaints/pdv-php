@@ -28,7 +28,7 @@
 - [x] **S05: S05** `risk:medium` `depends:[]`
   > After this: The stock screen shows low-stock products, lets the user record replenishment entries or adjustments, and updates balances and movement history.
 
-- [ ] **S06: Servicos e ordens de servico** `risk:medium` `depends:[S02,S03]`
+- [x] **S06: S06** `risk:medium` `depends:[]`
   > After this: A user can create a customer service order, add services/products, move it through statuses and optionally close it into a sale/payment flow.
 
 - [ ] **S07: Relatorios dashboard e dicas** `risk:medium` `depends:[S03,S05,S06]`

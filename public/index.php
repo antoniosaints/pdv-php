@@ -11,6 +11,7 @@ use Pdv\Http\Response;
 use Pdv\Http\Router;
 use Pdv\Sales\SalesRepository;
 use Pdv\Security\Csrf;
+use Pdv\ServiceOrders\ServiceOrderRepository;
 use Pdv\Stock\StockRepository;
 use Pdv\Support\Env;
 use Pdv\Support\HealthCheck;
@@ -37,7 +38,7 @@ try {
     $migrator = new Migrator($pdo, $rootPath . '/database/migrations');
     $auth = new AuthService($pdo);
     $catalog = new CatalogRepository($pdo);
-    $router = new Router($view, $auth, new Csrf(), new HealthCheck($rootPath, $pdo, $migrator), $catalog, new SalesRepository($pdo), new StockRepository($pdo));
+    $router = new Router($view, $auth, new Csrf(), new HealthCheck($rootPath, $pdo, $migrator), $catalog, new SalesRepository($pdo), new StockRepository($pdo), new ServiceOrderRepository($pdo));
 
     $response = $router->dispatch(Request::fromGlobals());
 } catch (Throwable $throwable) {

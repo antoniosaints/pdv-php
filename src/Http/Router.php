@@ -15,9 +15,11 @@ use Pdv\Controllers\HealthController;
 use Pdv\Controllers\HomeController;
 use Pdv\Controllers\PrintController;
 use Pdv\Controllers\SalesController;
+use Pdv\Controllers\ServiceOrderController;
 use Pdv\Controllers\StockController;
 use Pdv\Http\Middleware\AuthMiddleware;
 use Pdv\Sales\SalesRepository;
+use Pdv\ServiceOrders\ServiceOrderRepository;
 use Pdv\Stock\StockRepository;
 use Pdv\Security\Csrf;
 use Pdv\Support\HealthCheck;
@@ -34,6 +36,7 @@ final class Router
         private readonly ?CatalogRepository $catalog = null,
         private readonly ?SalesRepository $sales = null,
         private readonly ?StockRepository $stock = null,
+        private readonly ?ServiceOrderRepository $serviceOrders = null,
     ) {
     }
 
@@ -60,8 +63,9 @@ final class Router
         $sales = $this->sales === null || $this->catalog === null ? null : new SalesController($this->view, $this->sales, $this->catalog, $this->auth, $this->csrf);
         $print = $this->sales === null || $this->catalog === null ? null : new PrintController($this->view, $this->sales, $this->catalog, $this->auth, $this->csrf);
         $stock = $this->stock === null ? null : new StockController($this->view, $this->stock, $this->auth, $this->csrf);
+        $serviceOrders = $this->serviceOrders === null || $this->catalog === null || $this->sales === null ? null : new ServiceOrderController($this->view, $this->serviceOrders, $this->catalog, $this->sales, $this->auth, $this->csrf);
 
-        return simpleDispatcher(static function (RouteCollector $route) use ($home, $authController, $dashboard, $health, $catalog, $sales, $print, $stock): void {
+        return simpleDispatcher(static function (RouteCollector $route) use ($home, $authController, $dashboard, $health, $catalog, $sales, $print, $stock, $serviceOrders): void {
             $route->addRoute('GET', '/', ['callable' => [$home, 'index']]);
             $route->addRoute('GET', '/login', ['callable' => [$authController, 'showLogin']]);
             $route->addRoute('POST', '/login', ['callable' => [$authController, 'login']]);
@@ -92,6 +96,15 @@ final class Router
                 $route->addRoute('GET', '/stock', ['callable' => [$stock, 'index'], 'auth' => true, 'roles' => ['admin', 'estoque']]);
                 $route->addRoute('POST', '/stock/replenishments', ['callable' => [$stock, 'replenish'], 'auth' => true, 'roles' => ['admin', 'estoque']]);
                 $route->addRoute('POST', '/stock/adjustments', ['callable' => [$stock, 'adjust'], 'auth' => true, 'roles' => ['admin', 'estoque']]);
+            }
+
+            if ($serviceOrders !== null) {
+                $route->addRoute('GET', '/service-orders', ['callable' => [$serviceOrders, 'index'], 'auth' => true, 'roles' => ['admin', 'caixa']]);
+                $route->addRoute('GET', '/service-orders/create', ['callable' => [$serviceOrders, 'create'], 'auth' => true, 'roles' => ['admin', 'caixa']]);
+                $route->addRoute('POST', '/service-orders', ['callable' => [$serviceOrders, 'store'], 'auth' => true, 'roles' => ['admin', 'caixa']]);
+                $route->addRoute('GET', '/service-orders/{id:\\d+}', ['callable' => [$serviceOrders, 'show'], 'auth' => true, 'roles' => ['admin', 'caixa']]);
+                $route->addRoute('POST', '/service-orders/{id:\\d+}/status', ['callable' => [$serviceOrders, 'updateStatus'], 'auth' => true, 'roles' => ['admin', 'caixa']]);
+                $route->addRoute('POST', '/service-orders/{id:\\d+}/close-sale', ['callable' => [$serviceOrders, 'closeSale'], 'auth' => true, 'roles' => ['admin', 'caixa']]);
             }
 
             if ($sales !== null) {

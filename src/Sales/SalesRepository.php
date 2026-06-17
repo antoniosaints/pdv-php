@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Pdv\Sales;
 
 use PDO;
+use RuntimeException;
 use Throwable;
 
 final class SalesRepository
@@ -18,32 +19,12 @@ final class SalesRepository
     /** @param array<string, mixed> $input */
     public function completeSale(array $input): int
     {
-        $data = $this->validator->normalizeSale($input);
-        $errors = $this->validator->sale($data);
-
-        if ($errors !== []) {
-            throw new ValidationException($errors);
-        }
+        $data = $this->validatedSaleData($input);
 
         $this->pdo->beginTransaction();
 
         try {
-            $prepared = $this->prepareItems($data['items']);
-            $totals = $this->calculateTotals($prepared, $data['payments']);
-            $saleId = $this->insertSale($data, $totals);
-
-            foreach ($prepared['items'] as $item) {
-                $this->insertSaleItem($saleId, $item);
-
-                if ((int) $item['track_stock'] === 1) {
-                    $this->decrementStock($saleId, $item, $prepared['stock_by_variant']);
-                }
-            }
-
-            foreach ($data['payments'] as $payment) {
-                $this->insertPayment($saleId, $payment);
-            }
-
+            $saleId = $this->persistCompletedSale($data);
             $this->pdo->commit();
 
             return $saleId;
@@ -54,6 +35,51 @@ final class SalesRepository
 
             throw $exception;
         }
+    }
+
+    /** @param array<string, mixed> $input */
+    public function completeSaleInCurrentTransaction(array $input): int
+    {
+        if (! $this->pdo->inTransaction()) {
+            throw new RuntimeException('An active transaction is required to complete a sale in the current transaction.');
+        }
+
+        return $this->persistCompletedSale($this->validatedSaleData($input));
+    }
+
+    /** @param array<string, mixed> $input @return array<string, mixed> */
+    private function validatedSaleData(array $input): array
+    {
+        $data = $this->validator->normalizeSale($input);
+        $errors = $this->validator->sale($data);
+
+        if ($errors !== []) {
+            throw new ValidationException($errors);
+        }
+
+        return $data;
+    }
+
+    /** @param array<string, mixed> $data */
+    private function persistCompletedSale(array $data): int
+    {
+        $prepared = $this->prepareItems($data['items']);
+        $totals = $this->calculateTotals($prepared, $data['payments']);
+        $saleId = $this->insertSale($data, $totals);
+
+        foreach ($prepared['items'] as $item) {
+            $this->insertSaleItem($saleId, $item);
+
+            if ((int) $item['track_stock'] === 1) {
+                $this->decrementStock($saleId, $item, $prepared['stock_by_variant']);
+            }
+        }
+
+        foreach ($data['payments'] as $payment) {
+            $this->insertPayment($saleId, $payment);
+        }
+
+        return $saleId;
     }
 
     /** @return array<string, mixed>|null */

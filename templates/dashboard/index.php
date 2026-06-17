@@ -11,6 +11,7 @@
             <input type="hidden" name="_token" value="<?= htmlspecialchars((string) $csrfToken, ENT_QUOTES, 'UTF-8') ?>">
             <div class="actions actions--vertical">
                 <a class="button" href="/pos">Abrir PDV</a>
+                <a class="button button--ghost" href="/service-orders">Ordens de serviço</a>
                 <a class="button button--ghost" href="/catalog">Abrir catálogo</a>
                 <a class="button button--ghost" href="/stock">Controlar estoque</a>
                 <button class="button button--ghost" type="submit">Sair</button>
@@ -33,6 +34,7 @@
         <ol>
             <li>Catálogo de produtos, variantes, serviços e códigos de barras.</li>
             <li>PDV com leitor de código de barras, pagamentos e baixa automática.</li>
+            <li>Ordens de serviço com cliente, itens, status e fechamento em venda.</li>
             <li>Impressão de recibos e etiquetas via QZ Tray.</li>
             <li>Relatórios, reposição, dashboard gerencial e backup.</li>
         </ol>

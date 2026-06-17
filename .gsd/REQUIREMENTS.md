@@ -4,16 +4,6 @@ This file is the explicit capability and coverage contract for the project.
 
 ## Active
 
-### R008 — O sistema deve registrar venda de serviços e ordens de serviço com status, cliente, itens/serviços, valores e conclusão.
-- Class: core-capability
-- Status: active
-- Description: O sistema deve registrar venda de serviços e ordens de serviço com status, cliente, itens/serviços, valores e conclusão.
-- Why it matters: Algumas lojas vendem serviços além de produtos e precisam acompanhar execução antes da cobrança ou entrega.
-- Source: user
-- Primary owning slice: M001/S06
-- Validation: Partially advanced by S02 service items.
-- Notes: Service catalog items exist and can be looked up; full order-of-service flow remains mapped to S06.
-
 ### R009 — O sistema deve oferecer relatórios de vendas, lucro, desempenho mensal, previsão do mês, dashboard de resumo e dicas de melhoria baseadas nos dados.
 - Class: core-capability
 - Status: active
@@ -106,6 +96,16 @@ This file is the explicit capability and coverage contract for the project.
 - Validation: Validated by S05: protected stock screen shows low-stock alerts, records replenishment and manual adjustments, prevents negative stock and displays movement history; repository tests, feature tests and browser UAT passed.
 - Notes: Validated at MVP depth: manual replenishment and adjustment are present. Supplier purchase orders, automatic reorder suggestions and advanced procurement can evolve in later milestones.
 
+### R008 — O sistema deve registrar venda de serviços e ordens de serviço com status, cliente, itens/serviços, valores e conclusão.
+- Class: core-capability
+- Status: validated
+- Description: O sistema deve registrar venda de serviços e ordens de serviço com status, cliente, itens/serviços, valores e conclusão.
+- Why it matters: Algumas lojas vendem serviços além de produtos e precisam acompanhar execução antes da cobrança ou entrega.
+- Source: user
+- Primary owning slice: M001/S06
+- Validation: Validated by S06: protected service-order flow creates customer orders with service/product items, status history, values and atomic close into sale/payment; browser UAT confirmed sale linkage and product stock decrement 12 → 11 while service items did not move stock.
+- Notes: Validated at MVP depth by S06. Future milestones may add customer master records, staff assignment, scheduling, attachments and richer service lifecycle if needed.
+
 ### R010 — O sistema deve manter portabilidade entre SQLite e MySQL usando PDO, migrations versionadas e SQL conservador.
 - Class: quality-attribute
 - Status: validated
@@ -141,7 +141,7 @@ This file is the explicit capability and coverage contract for the project.
 | R005 | primary-user-loop | validated | M001/S03 | none | Validated by S03: protected /pos flow supports barcode/search item selection, quantity, discount, payment method and finalization; browser UAT completed a seeded barcode sale and landed on the sale detail page. |
 | R006 | integration | validated | M001/S04 | none | Validated by S04: receipt and label preview routes, QZ Tray browser adapter, visible print diagnostics and native fallback were covered by feature tests and browser UAT with no console/network failures. |
 | R007 | core-capability | validated | M001/S05 | none | Validated by S05: protected stock screen shows low-stock alerts, records replenishment and manual adjustments, prevents negative stock and displays movement history; repository tests, feature tests and browser UAT passed. |
-| R008 | core-capability | active | M001/S06 | none | Partially advanced by S02 service items. |
+| R008 | core-capability | validated | M001/S06 | none | Validated by S06: protected service-order flow creates customer orders with service/product items, status history, values and atomic close into sale/payment; browser UAT confirmed sale linkage and product stock decrement 12 → 11 while service items did not move stock. |
 | R009 | core-capability | active | M001/S07 | none | mapped to M001/S07 |
 | R010 | quality-attribute | validated | M001/S01 | none | Validated by S01: PDO connection and idempotent migrations on SQLite, with migration pattern containing SQLite/MySQL branches. |
 | R011 | continuity | active | M001/S08 | none | mapped to M001/S08 |
@@ -149,7 +149,7 @@ This file is the explicit capability and coverage contract for the project.
 
 ## Coverage Summary
 
-- Active requirements: 3
-- Mapped to slices: 3
-- Validated: 8 (R001, R002, R003, R004, R005, R006, R007, R010)
+- Active requirements: 2
+- Mapped to slices: 2
+- Validated: 9 (R001, R002, R003, R004, R005, R006, R007, R008, R010)
 - Unmapped active requirements: 0

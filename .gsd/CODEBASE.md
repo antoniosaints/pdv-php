@@ -1,7 +1,7 @@
 # Codebase Map
 
-Generated: 2026-06-06T00:07:27Z | Files: 55 | Described: 0/55
-<!-- gsd:codebase-meta {"generatedAt":"2026-06-06T00:07:27Z","fingerprint":"4496142c4f5a7c22ceef8e0121f2e6dcc0e728ee","fileCount":55,"truncated":false} -->
+Generated: 2026-06-06T13:15:50Z | Files: 76 | Described: 0/76
+<!-- gsd:codebase-meta {"generatedAt":"2026-06-06T13:15:50Z","fingerprint":"c8a6567a2722c27a3b4849d2c651bb37554fe6e2","fileCount":76,"truncated":false} -->
 
 ### (root)/
 - `.env.example`
@@ -20,6 +20,7 @@ Generated: 2026-06-06T00:07:27Z | Files: 55 | Described: 0/55
 ### database/migrations/
 - `database/migrations/001_create_core_tables.php`
 - `database/migrations/002_create_catalog_tables.php`
+- `database/migrations/003_create_sales_tables.php`
 
 ### database/seeders/
 - `database/seeders/catalog_seed.php`
@@ -29,6 +30,7 @@ Generated: 2026-06-06T00:07:27Z | Files: 55 | Described: 0/55
 
 ### public/assets/
 - `public/assets/app.css`
+- `public/assets/print.js`
 
 ### src/Auth/
 - `src/Auth/AuthService.php`
@@ -44,6 +46,9 @@ Generated: 2026-06-06T00:07:27Z | Files: 55 | Described: 0/55
 - `src/Controllers/DashboardController.php`
 - `src/Controllers/HealthController.php`
 - `src/Controllers/HomeController.php`
+- `src/Controllers/PrintController.php`
+- `src/Controllers/SalesController.php`
+- `src/Controllers/StockController.php`
 
 ### src/Database/
 - `src/Database/ConnectionFactory.php`
@@ -58,8 +63,18 @@ Generated: 2026-06-06T00:07:27Z | Files: 55 | Described: 0/55
 ### src/Http/Middleware/
 - `src/Http/Middleware/AuthMiddleware.php`
 
+### src/Sales/
+- `src/Sales/SalesRepository.php`
+- `src/Sales/SalesValidator.php`
+- `src/Sales/ValidationException.php`
+
 ### src/Security/
 - `src/Security/Csrf.php`
+
+### src/Stock/
+- `src/Stock/StockRepository.php`
+- `src/Stock/StockValidator.php`
+- `src/Stock/ValidationException.php`
 
 ### src/Support/
 - `src/Support/Env.php`
@@ -96,6 +111,17 @@ Generated: 2026-06-06T00:07:27Z | Files: 55 | Described: 0/55
 ### templates/health/
 - `templates/health/index.php`
 
+### templates/print/
+- `templates/print/label.php`
+- `templates/print/receipt.php`
+
+### templates/sales/
+- `templates/sales/pos.php`
+- `templates/sales/show.php`
+
+### templates/stock/
+- `templates/stock/index.php`
+
 ### tests/Catalog/
 - `tests/Catalog/CatalogLookupTest.php`
 - `tests/Catalog/CatalogRepositoryTest.php`
@@ -109,3 +135,12 @@ Generated: 2026-06-06T00:07:27Z | Files: 55 | Described: 0/55
 - `tests/Feature/CatalogSeedTest.php`
 - `tests/Feature/CatalogVariantTest.php`
 - `tests/Feature/HealthTest.php`
+- `tests/Feature/PrintPreviewTest.php`
+- `tests/Feature/SalesFlowTest.php`
+- `tests/Feature/StockFlowTest.php`
+
+### tests/Sales/
+- `tests/Sales/SaleRepositoryTest.php`
+
+### tests/Stock/
+- `tests/Stock/StockRepositoryTest.php`

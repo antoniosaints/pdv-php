@@ -54,12 +54,12 @@ final class MigratorTest extends TestCase
         $secondRun = $migrator->migrate();
         $status = $migrator->status();
 
-        self::assertSame(['001_create_core_tables.php', '002_create_catalog_tables.php', '003_create_sales_tables.php'], $firstRun);
+        self::assertSame(['001_create_core_tables.php', '002_create_catalog_tables.php', '003_create_sales_tables.php', '004_create_service_orders_tables.php'], $firstRun);
         self::assertSame([], $secondRun);
-        self::assertSame(['001_create_core_tables.php', '002_create_catalog_tables.php', '003_create_sales_tables.php'], $status['executed']);
+        self::assertSame(['001_create_core_tables.php', '002_create_catalog_tables.php', '003_create_sales_tables.php', '004_create_service_orders_tables.php'], $status['executed']);
         self::assertSame([], $status['pending']);
 
-        foreach (['schema_migrations', 'users', 'audit_logs', 'app_settings', 'products', 'product_variants', 'sales', 'sale_items', 'sale_payments', 'stock_movements'] as $table) {
+        foreach (['schema_migrations', 'users', 'audit_logs', 'app_settings', 'products', 'product_variants', 'sales', 'sale_items', 'sale_payments', 'stock_movements', 'service_orders', 'service_order_items', 'service_order_status_history'] as $table) {
             self::assertTrue($this->sqliteTableExists($pdo, $table), "Table [{$table}] should exist.");
         }
     }

@@ -35,6 +35,17 @@ Para testar o PDV após `php bin/console seed:catalog`, abra `/pos` e use os có
 
 Ao finalizar uma venda, a tela `/sales/{id}` mostra itens, pagamento, troco e movimentos de estoque vinculados para diagnóstico.
 
+## Ordens de serviço
+
+Usuários `admin` ou `caixa` acessam `/service-orders` para acompanhar serviços antes do pagamento final:
+
+- crie a ordem em `/service-orders/create` com cliente, telefone/documento opcionais, descrição, serviços e produtos do catálogo;
+- acompanhe o andamento pelos status `Aberta`, `Em execução`, `Pronta`, `Cancelada` e `Fechada`;
+- use a página da ordem para ver totais, itens, histórico de status e vínculo com a venda;
+- feche a ordem em venda pelo formulário de pagamento da própria ordem.
+
+O fechamento cria uma venda concluída, reaproveita o mesmo fluxo de pagamento do PDV e baixa estoque apenas dos produtos controlados. Serviços permanecem como itens vendidos sem movimento físico de estoque. Se o pagamento for insuficiente ou o estoque de produto não estiver disponível, a ordem continua aberta e a mensagem de validação aparece no detalhe da ordem.
+
 Se preferir criar o administrador pelo console, defina `ADMIN_EMAIL`, `ADMIN_PASSWORD` e opcionalmente `ADMIN_NAME` no ambiente antes de rodar `composer setup`; os valores não são exibidos no console.
 
 ## Scripts
